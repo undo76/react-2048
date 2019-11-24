@@ -1,0 +1,116 @@
+body {
+  display: block !important;
+  background: #f5f5f5;
+  text-align: center;
+}
+
+.unselectable() {
+  user-select: none;
+}
+
+.game {
+  font-family: Helvetica, sans-serif;
+  button {
+    display: block;
+    margin: 20px auto;
+  }
+
+  .score {
+    font-weight: bold;
+    margin: 1em;
+  }
+}
+
+.game-board {
+  @cell-size: 20vmin;
+  @margin: @cell-size / 34;
+
+  display: inline-block;
+  white-space: nowrap;
+  padding: @cell-size / 34;
+  background: #f5f5f5;
+  border-radius: @cell-size / 20;
+
+  .cell {
+    .unselectable();
+
+    display: inline-block;
+    box-sizing: border-box;
+    margin: @margin;
+    width: @cell-size;
+    height: @cell-size;
+    line-height: @cell-size;
+    background: #eee;
+    vertical-align: bottom;
+    text-align: center;
+    color: transparent;
+    font-size: 0;
+
+    position: relative;
+
+    border-radius: @cell-size / 15;
+    font-family: sans-serif;
+    font-weight: bold;
+
+    opacity: 1;
+    position: relative;
+    left: 0;
+    transition: opacity 0.4s, margin 0.2s, width 0.2s, height 0.2s,
+      transform 0.2s, line-height 0.2s, font-size 0.2s, text-shadow 0.4s;
+
+    &.new {
+      opacity: 0.1;
+
+      margin: @margin + @cell-size / 2;
+      height: 0;
+      width: 0;
+      line-height: 0px;
+      font-size: 0 !important;
+    }
+
+    &.combined {
+      text-shadow: 0 0 15px #ffa;
+    }
+
+    .cell-translation(@i: -3) when (@i =< 3) {
+      &.cell-translation-@{i} {
+        transform: translate(@i* (@cell-size + 2 * @margin));
+      }
+      .cell-translation(@i + 1);
+    }
+
+    .cell-translation();
+
+    .cell(@max, @i: 2) when (@i =< @max) {
+      &.cell-@{i} {
+        @color: hsv(@i*17, 0.3, 0.9);
+        background: @color;
+        color: contrast(@color, #666, #fff);
+        //color: white;
+        font-size: @cell-size / 2;
+        & when (@i/100 >= 1) {
+          & {
+            font-size: 0.47 * @cell-size;
+          }
+        }
+        & when (@i/1000 >= 1) {
+          & {
+            font-size: 0.35 * @cell-size;
+          }
+        }
+        & when (@i/10000 >= 1) {
+          & {
+            font-size: 0.3 * @cell-size;
+          }
+        }
+      }
+      .cell(@max, 2 * @i);
+    }
+
+    .cell(65536);
+  }
+}
+
+.game-over {
+  font-weight: bold;
+}

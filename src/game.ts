@@ -1,5 +1,5 @@
-export type CellType = Number & { properties: any };
-enum Direction {
+export type CellType = Number & { properties?: any, n: number};
+export enum Direction {
   UP = 'UP',
   DOWN = 'DOWN',
   LEFT = 'LEFT',
@@ -12,7 +12,7 @@ function getRandomInt(min: number, max: number): number {
 export class Game {
   over = true;
   score = 0;
-  board: CellType[][];
+  board!: CellType[][];
 
   constructor(public size: number = 4) {
     this.clearBoard();
@@ -20,7 +20,7 @@ export class Game {
 
   forEachCell(fn: (i: number, j: number) => any) {
     for (let i = 0; i < this.size; i++) {
-      for (let j = 0; i < this.size; i++) {
+      for (let j = 0; j < this.size; j++) {
         fn(i, j);
       }
     }
@@ -32,10 +32,14 @@ export class Game {
 
   clearBoard() {
     this.over = false;
-    this.board = Array(this.size)
-      .fill(0)
-      .map(_ => Array(this.size).fill(new Number(0))); // eslint-disable-line
-    console.debug(this.size, this.board);
+    this.score = 0;
+    this.board = new Array(this.size);
+    for (var i = 0; i < this.size; i++) {
+      this.board[i] = new Array(this.size);
+      for (var j = 0; j < this.size; j++) {
+        this.setCell(i, j, 0);
+      }
+    }
   }
 
   getCell = (i: number, j: number) => {
@@ -50,6 +54,7 @@ export class Game {
   ): CellType => {
     const n = new Number(value) as CellType; // eslint-disable-line
     n.properties = properties;
+    n.n = value;
     return (this.board[i][j] = n);
   };
 
@@ -57,11 +62,11 @@ export class Game {
     f: (arg1: number, arg2: number, ...rest: any) => T,
   ): typeof f => {
     return (first: number, second: number, ...rest) => {
-      return f(second, first, rest);
+      return f(second, first, ...rest);
     };
   };
 
-  collapse = (i: number, dir: number, g, s) => {
+  collapse = (i: number, dir: number, g: any, s: any) => {
     const start = dir > 0 ? 0 : this.size - 1;
     const end = dir < 0 ? 0 : this.size - 1;
     let changed = false;
@@ -94,8 +99,8 @@ export class Game {
       for (var j = start; j !== end; j += dir) {
         if (+g(i, j) !== 0 && +g(i, j) === +g(i, j + dir)) {
           if (test) return true;
-          this.score += 2 * +g(i, j);
-          s(i, j, 2 * +g(i, j), { className: 'combined' });
+          this.score += +g(i, j) * 2;
+          s(i, j, +g(i, j) * 2, { className: 'combined'  });
           s(i, j + dir, 0);
 
           changed = true;
@@ -122,12 +127,12 @@ export class Game {
     let count = this.emptyCellsCount();
     let idx = getRandomInt(1, count);
     console.debug(this.board);
-    this.forEachCell(function(i, j) {
+    this.forEachCell((i, j) => {
       const cell = this.getCell(i, j);
       if (+cell === 0) {
         idx--;
         if (idx === 0) {
-          this.setCell(i, j, this.getRandomInt(1, 10) === 1 ? 4 : 2, {
+          this.setCell(i, j, getRandomInt(1, 10) === 1 ? 4 : 2, {
             className: 'new',
           });
           count--;
@@ -154,6 +159,7 @@ export class Game {
   }
 
   turn(direction: Direction) {
+    console.log(direction);
     let changed = false;
 
     switch (direction) {
@@ -174,42 +180,10 @@ export class Game {
     if (changed) {
       this.createCell();
     }
+    this.print();
   }
 
   print() {
-    console.debug(this.board);
+    console.log(this.rows.map(row => row.map(c => +c).join(' ')).join('\n'));
   }
-
-  /*
-  self.on(
-    "ArrowUp ArrowDown ArrowRight ArrowLeft swipeup swipedown swipeleft swiperight",
-    function(ev) {
-      var changed;
-
-      switch (ev) {
-        case "ArrowUp":
-        case "swipeup":
-          changed = move(true, 1);
-          break;
-        case "ArrowDown":
-        case "swipedown":
-          changed = move(true, -1);
-          break;
-        case "ArrowLeft":
-        case "swipeleft":
-          changed = move(false, 1);
-          break;
-        case "ArrowRight":
-        case "swiperight":
-          changed = move(false, -1);
-          break;
-      }
-
-      if (changed) {
-        createCell();
-      }
-      self.trigger("updateGame");
-    }
-  );
-  */
 }
