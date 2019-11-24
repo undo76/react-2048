@@ -1,0 +1,21 @@
+import React from 'react';
+import { CellType, Game, Direction } from './game';
+
+const Cell = ({ cell }: { cell: CellType }) => (
+  <div className="cell">{+cell}</div>
+);
+
+export const Board = ({ game }: { game: Game }) => {
+  console.log(game);
+  return (
+    <div className="Board">
+      {game.board.map((row, i) => (
+        <div key={i}>
+          {row.map((cell, j) => (
+            <Cell key={j} cell={cell} />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+};
