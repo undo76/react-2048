@@ -2,7 +2,7 @@ import * as React from 'react';
 import { CellType, Game, Direction } from './game';
 
 const Cell = ({ cell }: { cell: CellType }) => (
-  <div className={`cell cell-${+cell}`}>{+cell}</div>
+  <div className={`cell cell-${cell && cell.value}`}>{cell && cell.value}</div>
 );
 
 export const Board = ({ game }: { game: Game }) => {

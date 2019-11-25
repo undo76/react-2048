@@ -1,4 +1,4 @@
-export type CellType = Number & { properties?: any; n: number };
+export type CellType = { id: number; value: number } | null;
 
 export enum Direction {
   UP = 'UP',
@@ -25,8 +25,9 @@ export class Game {
   over = true;
   score = 0;
   board!: CellType[][];
+  id = 1;
 
-  constructor(public size: number = 4) {
+  constructor(public size: number) {
     this.clearBoard();
   }
 
@@ -49,7 +50,7 @@ export class Game {
     for (var i = 0; i < this.size; i++) {
       this.board[i] = new Array(this.size);
       for (var j = 0; j < this.size; j++) {
-        this.setCell(i, j, 0);
+        this.setCell(i, j, null);
       }
     }
   }
@@ -58,16 +59,8 @@ export class Game {
     return this.board[i][j];
   };
 
-  setCell = (
-    i: number,
-    j: number,
-    value: number,
-    properties?: any,
-  ): CellType => {
-    const n = new Number(value) as CellType; // eslint-disable-line
-    n.properties = properties;
-    n.n = value;
-    return (this.board[i][j] = n);
+  setCell = (i: number, j: number, value: CellType): CellType => {
+    return (this.board[i][j] = value);
   };
 
   transposeFn = <T>(
@@ -93,9 +86,9 @@ export class Game {
     do {
       repeat = false;
       for (let j = 0; j < this.size - 1; j++) {
-        if (+g(i, j) === 0 && +g(i, j + 1) !== 0) {
-          s(i, j, +g(i, j + 1));
-          s(i, j + 1, 0);
+        if (g(i, j) === null && g(i, j + 1) !== null) {
+          s(i, j, g(i, j + 1));
+          s(i, j + 1, null);
           repeat = true;
           changed = true;
         }
@@ -122,15 +115,18 @@ export class Game {
     for (let i = 0; i < this.size; i++) {
       changed = this.collapse(i, g, s) || changed;
       for (let j = 0; j < this.size - 1; j++) {
-        if (+g(i, j) !== 0 && +g(i, j) === +g(i, j + 1)) {
+        const current = g(i, j);
+        const next = g(i, j + 1);
+        if (current !== null && next !== null && current.value === next.value) {
           if (test) return true;
-          this.score += +g(i, j) * 2;
-          s(i, j, +g(i, j) * 2, { className: 'combined' });
-          s(i, j + 1, 0);
+          const sum = current.value + next.value
+          this.score += sum ;
+          s(i, j, { id: this.id++, value: sum});
+          s(i, j + 1, null);
           changed = true;
         }
       }
-      if(!test) {
+      if (!test) {
         changed = this.collapse(i, g, s) || changed;
       }
     }
@@ -141,7 +137,7 @@ export class Game {
     let count = 0;
     this.forEachCell((i, j) => {
       const cell = this.getCell(i, j);
-      if (+cell === 0) {
+      if (cell === null) {
         count++;
       }
     });
@@ -153,11 +149,12 @@ export class Game {
     let idx = getRandomInt(1, count);
     this.forEachCell((i, j) => {
       const cell = this.getCell(i, j);
-      if (+cell === 0) {
+      if (cell === null) {
         idx--;
         if (idx === 0) {
-          this.setCell(i, j, getRandomInt(1, 10) === 1 ? 4 : 2, {
-            className: 'new',
+          this.setCell(i, j, {
+            id: this.id++,
+            value: getRandomInt(1, 10) === 1 ? 4 : 2,
           });
           count--;
         }
@@ -213,7 +210,9 @@ export class Game {
   print() {
     console.log(
       this.rows
-        .map(row => row.map(c => (+c + '').padStart(5, ' ')).join('  '))
+        .map(row =>
+          row.map(c => (c ? c.value + '' : '_').padStart(5, ' ')).join('  '),
+        )
         .join('\n'),
     );
   }
