@@ -1,8 +1,5 @@
 export type CellType = Number & { properties?: any; n: number };
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 export enum Direction {
   UP = 'UP',
   DOWN = 'DOWN',
@@ -16,7 +13,7 @@ enum Traversal {
 }
 
 enum Axis {
-  Horzontal,
+  Horizontal,
   Vertical,
 }
 
@@ -107,17 +104,23 @@ export class Game {
     return changed;
   };
 
-  move = (vertical: boolean, dir: number, test = false) => {
-    let g = vertical ? this.transposeFn(this.getCell) : this.getCell;
-    let s = vertical ? this.transposeFn(this.setCell) : this.setCell;
-    g = dir < 0 ? this.backwardsFn(g) : g;
-    s = dir < 0 ? this.backwardsFn(s) : s;
+  move = (axis: Axis, traversal: Traversal, test = false) => {
+    let g = this.getCell;
+    let s = this.setCell;
+
+    if (axis == Axis.Vertical) {
+      g = this.transposeFn(this.getCell);
+      s = this.transposeFn(this.setCell);
+    }
+
+    if (traversal === Traversal.Backwards) {
+      g = this.backwardsFn(g);
+      s = this.backwardsFn(s);
+    }
 
     let changed = false;
-
     for (let i = 0; i < this.size; i++) {
       changed = this.collapse(i, g, s) || changed;
-
       for (let j = 0; j < this.size - 1; j++) {
         if (+g(i, j) !== 0 && +g(i, j) === +g(i, j + 1)) {
           if (test) return true;
@@ -127,8 +130,9 @@ export class Game {
           changed = true;
         }
       }
-
-      changed = test || this.collapse(i, g, s) || changed;
+      if(!test) {
+        changed = this.collapse(i, g, s) || changed;
+      }
     }
     return !test && changed;
   };
@@ -168,7 +172,10 @@ export class Game {
   gameOver(emptyCells: number) {
     return (
       emptyCells === 0 &&
-      !(this.move(true, 1, true) || this.move(false, 1, true))
+      !(
+        this.move(Axis.Vertical, Traversal.Forward, true) ||
+        this.move(Axis.Horizontal, Traversal.Forward, true)
+      )
     );
   }
 
@@ -184,16 +191,16 @@ export class Game {
 
     switch (direction) {
       case Direction.UP:
-        changed = this.move(true, 1);
+        changed = this.move(Axis.Vertical, Traversal.Forward);
         break;
       case Direction.DOWN:
-        changed = this.move(true, -1);
+        changed = this.move(Axis.Vertical, Traversal.Backwards);
         break;
       case Direction.LEFT:
-        changed = this.move(false, 1);
+        changed = this.move(Axis.Horizontal, Traversal.Forward);
         break;
       case Direction.RIGHT:
-        changed = this.move(false, -1);
+        changed = this.move(Axis.Horizontal, Traversal.Backwards);
         break;
     }
 

@@ -23,7 +23,7 @@ function App() {
     },
     4,
     size => ({
-      game: new Game(size).start(),
+      game: new Game(size),
     }),
   );
 
@@ -46,9 +46,6 @@ function App() {
         case 'swiperight':
           dispatch(Direction.RIGHT);
           break;
-        default:
-          dispatch(key);
-          break;
       }
     },
     [dispatch],
@@ -62,7 +59,7 @@ function App() {
       <Board game={state.game} />
       <div className="score">Score: {state.game.score}</div>
       {state.game.over && <div className="game-over">Game over</div>}
-      <button onClick={() => commandCallback('NEW')}>New Game</button>
+      <button onClick={() => dispatch('NEW')}>New Game</button>
     </div>
   );
 }
