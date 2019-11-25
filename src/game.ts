@@ -108,9 +108,9 @@ export class Game {
     let g = this.getCell;
     let s = this.setCell;
 
-    if (axis == Axis.Vertical) {
-      g = this.transposeFn(this.getCell);
-      s = this.transposeFn(this.setCell);
+    if (axis === Axis.Vertical) {
+      g = this.transposeFn(g);
+      s = this.transposeFn(s);
     }
 
     if (traversal === Traversal.Backwards) {
