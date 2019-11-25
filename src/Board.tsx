@@ -6,7 +6,6 @@ const Cell = ({ cell }: { cell: CellType }) => (
 );
 
 export const Board = ({ game }: { game: Game }) => {
-  console.log(game);
   return (
     <div className="game-board">
       {game.board.map((row, i) => (

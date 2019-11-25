@@ -1,5 +1,8 @@
 export type CellType = Number & { properties?: any; n: number };
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 export enum Direction {
   UP = 'UP',
   DOWN = 'DOWN',
@@ -121,7 +124,6 @@ export class Game {
           this.score += +g(i, j) * 2;
           s(i, j, +g(i, j) * 2, { className: 'combined' });
           s(i, j + 1, 0);
-
           changed = true;
         }
       }
@@ -145,7 +147,6 @@ export class Game {
   createCell = () => {
     let count = this.emptyCellsCount();
     let idx = getRandomInt(1, count);
-    console.debug(this.board);
     this.forEachCell((i, j) => {
       const cell = this.getCell(i, j);
       if (+cell === 0) {
@@ -203,6 +204,10 @@ export class Game {
   }
 
   print() {
-    console.log(this.rows.map(row => row.map(c => +c).join(' ')).join('\n'));
+    console.log(
+      this.rows
+        .map(row => row.map(c => (+c + '').padStart(5, ' ')).join('  '))
+        .join('\n'),
+    );
   }
 }

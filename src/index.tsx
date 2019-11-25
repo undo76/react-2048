@@ -6,9 +6,10 @@ import './styles.less';
 import { Board } from './Board';
 import { Game, Direction } from './game';
 import { useKeyDown } from './useKeyDown';
+import { useHammer } from './useHammer';
 
 function App() {
-  const [state, turn] = useReducer(
+  const [state, dispatch] = useReducer(
     (state, action) => {
       switch (action) {
         case 'NEW':
@@ -26,34 +27,42 @@ function App() {
     }),
   );
 
-  useKeyDown(
-    useCallback(
-      key => {
-        switch (key) {
-          case 'ArrowUp':
-            turn(Direction.UP);
-            break;
-          case 'ArrowDown':
-            turn(Direction.DOWN);
-            break;
-          case 'ArrowLeft':
-            turn(Direction.LEFT);
-            break;
-          case 'ArrowRight':
-            turn(Direction.RIGHT);
-            break;
-        }
-      },
-      [turn],
-    ),
+  const commandCallback = useCallback(
+    key => {
+      switch (key) {
+        case 'ArrowUp':
+        case 'swipeup':
+          dispatch(Direction.UP);
+          break;
+        case 'ArrowDown':
+        case 'swipedown':
+          dispatch(Direction.DOWN);
+          break;
+        case 'ArrowLeft':
+        case 'swipeleft':
+          dispatch(Direction.LEFT);
+          break;
+        case 'ArrowRight':
+        case 'swiperight':
+          dispatch(Direction.RIGHT);
+          break;
+        default:
+          dispatch(key);
+          break;
+      }
+    },
+    [dispatch],
   );
+
+  useKeyDown(commandCallback);
+  useHammer(commandCallback);
 
   return (
     <div className="game">
       <Board game={state.game} />
       <div className="score">Score: {state.game.score}</div>
       {state.game.over && <div className="game-over">Game over</div>}
-      <button onClick={() => turn('NEW')}>New Game</button>
+      <button onClick={() => commandCallback('NEW')}>New Game</button>
     </div>
   );
 }
