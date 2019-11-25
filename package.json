@@ -5,6 +5,7 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "parcel": "1.12.4",
     "prettier": "1.19.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
@@ -17,13 +18,8 @@
     "typescript": "3.3.3"
   },
   "scripts": {
-    "start": "parcel index.html",
+    "dev": "parcel index.html --open",
     "build": "parcel build index.html"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }

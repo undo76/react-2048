@@ -1,10 +1,22 @@
-export type CellType = Number & { properties?: any, n: number};
+export type CellType = Number & { properties?: any; n: number };
+
 export enum Direction {
   UP = 'UP',
   DOWN = 'DOWN',
   LEFT = 'LEFT',
   RIGHT = 'RIGHT',
 }
+
+enum Traversal {
+  Forward,
+  Backwards,
+}
+
+enum Axis {
+  Horzontal,
+  Vertical,
+}
+
 function getRandomInt(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -59,25 +71,31 @@ export class Game {
   };
 
   transposeFn = <T>(
-    f: (arg1: number, arg2: number, ...rest: any) => T,
+    f: (first: number, second: number, ...rest: any[]) => T,
   ): typeof f => {
-    return (first: number, second: number, ...rest) => {
+    return (first, second, ...rest) => {
       return f(second, first, ...rest);
     };
   };
 
-  collapse = (i: number, dir: number, g: any, s: any) => {
-    const start = dir > 0 ? 0 : this.size - 1;
-    const end = dir < 0 ? 0 : this.size - 1;
+  backwardsFn = <T>(
+    f: (first: number, second: number, ...rest: any[]) => T,
+  ): typeof f => {
+    return (first, second, ...rest) => {
+      return f(first, this.size - second - 1, ...rest);
+    };
+  };
+
+  collapse = (i: number, g: any, s: any) => {
     let changed = false;
     let repeat: boolean;
 
     do {
       repeat = false;
-      for (var j = start; j !== end; j += dir) {
-        if (+g(i, j) === 0 && +g(i, j + dir) !== 0) {
-          s(i, j, +g(i, j + dir));
-          s(i, j + dir, 0);
+      for (let j = 0; j < this.size - 1; j++) {
+        if (+g(i, j) === 0 && +g(i, j + 1) !== 0) {
+          s(i, j, +g(i, j + 1));
+          s(i, j + 1, 0);
           repeat = true;
           changed = true;
         }
@@ -87,27 +105,28 @@ export class Game {
   };
 
   move = (vertical: boolean, dir: number, test = false) => {
-    const start = dir > 0 ? 0 : this.size - 1;
-    const end = dir < 0 ? 0 : this.size - 1;
-    const g = vertical ? this.transposeFn(this.getCell) : this.getCell;
-    const s = vertical ? this.transposeFn(this.setCell) : this.setCell;
+    let g = vertical ? this.transposeFn(this.getCell) : this.getCell;
+    let s = vertical ? this.transposeFn(this.setCell) : this.setCell;
+    g = dir < 0 ? this.backwardsFn(g) : g;
+    s = dir < 0 ? this.backwardsFn(s) : s;
+
     let changed = false;
 
     for (let i = 0; i < this.size; i++) {
-      changed = this.collapse(i, dir, g, s) || changed;
+      changed = this.collapse(i, g, s) || changed;
 
-      for (var j = start; j !== end; j += dir) {
-        if (+g(i, j) !== 0 && +g(i, j) === +g(i, j + dir)) {
+      for (let j = 0; j < this.size - 1; j++) {
+        if (+g(i, j) !== 0 && +g(i, j) === +g(i, j + 1)) {
           if (test) return true;
           this.score += +g(i, j) * 2;
-          s(i, j, +g(i, j) * 2, { className: 'combined'  });
-          s(i, j + dir, 0);
+          s(i, j, +g(i, j) * 2, { className: 'combined' });
+          s(i, j + 1, 0);
 
           changed = true;
         }
       }
 
-      changed = test || this.collapse(i, dir, g, s) || changed;
+      changed = test || this.collapse(i, g, s) || changed;
     }
     return !test && changed;
   };
