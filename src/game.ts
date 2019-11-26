@@ -39,6 +39,10 @@ export class Game {
     }
   }
 
+  get cells(): CellType[] {
+    return Array.prototype.concat([], ...this.rows);
+  }
+
   get rows() {
     return this.board;
   }
@@ -121,7 +125,7 @@ export class Game {
           if (test) return true;
           const sum = current.value + next.value
           this.score += sum ;
-          s(i, j, { id: this.id++, value: sum});
+          s(i, j, { id: current.id, value: sum});
           s(i, j + 1, null);
           changed = true;
         }
