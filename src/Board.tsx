@@ -1,13 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import { CellType, Game } from './game';
-import { useSpring, useTransition, animated } from 'react-spring';
+import { useSpring, animated } from 'react-spring';
 import { usePrevious } from './usePrevious';
 
 const Cell = ({ cell }: { cell: CellType }) => {
+  const [combined, toggle] = React.useState(false);
   const previous = usePrevious(cell);
   const props = useSpring({
     opacity: 1,
     transform: `scale(1)`,
+    highlight: previous != cell ? 1 : 0,
     from: {
       opacity: 0,
       transform: `scale(0.1)`,
@@ -16,9 +18,14 @@ const Cell = ({ cell }: { cell: CellType }) => {
   });
   return cell ? (
     <animated.div
-      style={props}
-      className={`cell cell-${cell && cell.value} ${previous != cell &&
-        'combined'}`}
+      style={{
+        ...props,
+        opacity: props.highlight.interpolate({
+          range: [0, 0.5, 1],
+          output: [1, 0, 1],
+        }),
+      }}
+      className={`cell cell-${cell && cell.value}`}
     >
       {cell && cell.value}
     </animated.div>
