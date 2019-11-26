@@ -8,24 +8,22 @@ import { Game, Direction } from './game';
 import { useKeyDown } from './useKeyDown';
 import { useHammer } from './useHammer';
 
+const reducer = (state: { game: Game }, action: Direction | 'NEW') => {
+  switch (action) {
+    case 'NEW':
+      state.game.start();
+      break;
+    default:
+      state.game.turn(action);
+      break;
+  }
+  return { ...state };
+};
+
 function App() {
-  const [state, dispatch] = useReducer(
-    (state, action) => {
-      switch (action) {
-        case 'NEW':
-          state.game.start();
-          break;
-        default:
-          state.game.turn(action);
-          break;
-      }
-      return { ...state };
-    },
-    4,
-    size => ({
-      game: new Game(size),
-    }),
-  );
+  const [state, dispatch] = useReducer(reducer, undefined, () => ({
+    game: new Game(4).start(),
+  }));
 
   const commandCallback = useCallback(
     key => {

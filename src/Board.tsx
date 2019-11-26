@@ -4,7 +4,6 @@ import { useSpring, animated } from 'react-spring';
 import { usePrevious } from './usePrevious';
 
 const Cell = ({ cell }: { cell: CellType }) => {
-  const [combined, toggle] = React.useState(false);
   const previous = usePrevious(cell);
   const props = useSpring({
     opacity: 1,
