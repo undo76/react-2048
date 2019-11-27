@@ -1,3 +1,6 @@
+@cell-size: 20vmin;
+@margin: 0.5vmin;
+
 body {
   display: block !important;
   background: #f5f5f5;
@@ -22,24 +25,22 @@ body {
 }
 
 .game-board {
+  position: relative;
   margin: auto;
-  width: 90vmin;
-  @cell-size: 20vmin;
-  @margin: @cell-size / 34;
+  width: 85vmin;
+  height: 85vmin;
 
   white-space: nowrap;
   padding: @cell-size / 34;
   background: #f5f5f5;
   border-radius: @cell-size / 20;
 
-  display: inline-flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  // display: inline-flex;
+  // flex-wrap: wrap;
+  // justify-content: center;
 
   .cell {
     .unselectable();
-
-    display: inline-block;
     box-sizing: border-box;
     margin: @margin;
     width: @cell-size;
@@ -51,27 +52,13 @@ body {
     color: transparent;
     font-size: 0;
 
-    position: relative;
-
     border-radius: @cell-size / 15;
     font-family: sans-serif;
     font-weight: bold;
 
     opacity: 1;
-    position: relative;
-    left: 0;
-    transition: opacity 0.4s, margin 0.2s, width 0.2s, height 0.2s,
-      transform 0.2s, line-height 0.2s, font-size 0.2s, text-shadow 0.4s;
-
-    &.new {
-      opacity: 0.1;
-
-      margin: @margin + @cell-size / 2;
-      height: 0;
-      width: 0;
-      line-height: 0px;
-      font-size: 0 !important;
-    }
+    position: absolute;
+    z-index: 1;
 
     &.combined {
       text-shadow: 0 0 15px #ffa;
@@ -88,6 +75,7 @@ body {
 
     .cell(@max, @i: 2) when (@i =< @max) {
       &.cell-@{i} {
+        z-index: 10;
         @color: hsv(@i*17, 0.3, 0.9);
         background: @color;
         color: contrast(@color, #666, #fff);

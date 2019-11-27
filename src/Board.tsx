@@ -1,45 +1,59 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { CellType, Game } from './game';
 import { useSpring, animated } from 'react-spring';
 import { usePrevious } from './usePrevious';
 
-const Cell = ({ cell }: { cell: CellType }) => {
-  const previous = usePrevious(cell);
+const Cell = ({ cell, x, y }: { cell: CellType; x: number; y: number }) => {
   const props = useSpring({
-    opacity: 1,
-    transform: `scale(1)`,
-    highlight: previous != cell ? 1 : 0,
     from: {
-      opacity: 0,
-      transform: `scale(0.1)`,
+      zIndex: 200,
+      opacity: 0.3,
+      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(1.5) `,
     },
-    config: { duration: 50 },
+    to: {
+      zIndex: 100,
+      opacity: 1,
+      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(1)`,
+    },
+    config: { duration: 150 },
   });
-  return cell ? (
-    <animated.div
-      style={{
-        ...props,
-        opacity: props.highlight.interpolate({
-          range: [0, 0.5, 1],
-          output: [1, 0, 1],
-        }),
-      }}
-      className={`cell cell-${cell && cell.value}`}
-    >
-      {cell && cell.value}
-    </animated.div>
-  ) : (
-    <div className="cell" />
+  return (
+    <>
+      {cell && (
+        <animated.div
+          style={{
+            position: 'absolute',
+            ...props,
+          }}
+          className={`cell cell-${cell && cell.value}`}
+        >
+          {cell && cell.value}
+        </animated.div>
+      )}
+
+      <div
+        style={{
+          zIndex: 0,
+          position: 'absolute',
+          transform: `scale(1) translateX(${21 * x}vmin) translateY(${21 *
+            y}vmin)`,
+        }}
+        className="cell"
+      />
+    </>
   );
 };
-
-const AnimatedCell = animated(Cell);
 
 export const Board = ({ game }: { game: Game }) => {
   return (
     <div className="game-board">
       {game.cells.map((cell, i) => (
-        <AnimatedCell key={cell ? cell.id : `null-${i}`} cell={cell} />
+        <Cell
+          key={cell ? cell.id : `null-${i}`}
+          cell={cell}
+          x={i % game.size}
+          y={Math.floor(i / game.size)}
+        />
       ))}
     </div>
   );
