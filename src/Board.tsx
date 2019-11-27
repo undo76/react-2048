@@ -1,21 +1,22 @@
 import React, { useRef } from 'react';
 import { CellType, Game } from './game';
-import { useSpring, animated } from 'react-spring';
-import { usePrevious } from './usePrevious';
+import { useSpring, animated, config } from 'react-spring';
 
 const Cell = ({ cell, x, y }: { cell: CellType; x: number; y: number }) => {
   const props = useSpring({
     from: {
       zIndex: 200,
       opacity: 0.3,
-      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(1.5) `,
+      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(2) `,
+      boxShadow: `0 1vmin 1vmin rgba(0,0,0,.1)`,
     },
     to: {
       zIndex: 100,
       opacity: 1,
       transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(1)`,
+      boxShadow: `0 0.2vmin 0.5vmin rgba(0,0,0,.4)`,
     },
-    config: { duration: 150 },
+    config: {...config.stiff, mass: 0.7},
   });
   return (
     <>
