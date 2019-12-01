@@ -7,14 +7,14 @@ const Cell = ({ cell, x, y }: { cell: CellType; x: number; y: number }) => {
     from: {
       zIndex: 200,
       opacity: 0.3,
-      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(2) `,
-      boxShadow: `0 1vmin 1vmin rgba(0,0,0,.1)`,
+      transform: `translateX(${16 * x}vh) translateY(${16 * y}vh) scale(2) `,
+      boxShadow: `0 1vh 1vh rgba(0,0,0,.1)`,
     },
     to: {
       zIndex: 100,
       opacity: 1,
-      transform: `translateX(${21 * x}vmin) translateY(${21 * y}vmin) scale(1)`,
-      boxShadow: `0 0.2vmin 0.5vmin rgba(0,0,0,.4)`,
+      transform: `translateX(${16 * x}vh) translateY(${16 * y}vh) scale(1)`,
+      boxShadow: `0 0.2vh 0.5vh rgba(0,0,0,.4)`,
     },
     config: {...config.stiff, mass: 0.7},
   });
@@ -36,8 +36,8 @@ const Cell = ({ cell, x, y }: { cell: CellType; x: number; y: number }) => {
         style={{
           zIndex: 0,
           position: 'absolute',
-          transform: `scale(1) translateX(${21 * x}vmin) translateY(${21 *
-            y}vmin)`,
+          transform: `scale(1) translateX(${16 * x}vh) translateY(${16 *
+            y}vh)`,
         }}
         className="cell"
       />

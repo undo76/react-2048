@@ -1,9 +1,14 @@
-@cell-size: 20vmin;
-@margin: 0.5vmin;
+@cell-size: 15vh;
+@margin: 0.5vh;
 @total: 4 * @cell-size + 10 * @margin;
 
 .unselectable() {
   user-select: none;
+}
+
+html, 
+body {
+    height: 100%;
 }
 
 body {
@@ -23,9 +28,9 @@ body {
 
   .title {
     flex: 2 0;
-    line-height: 12vmin;
-    font-size: 12vmin;
-    margin: 1vmin 0 0 0;
+    line-height: 12vh;
+    font-size: 12vh;
+    margin: 1vh 0 0 0;
     font-weight: bold;
     background-color: hsv(10, 0.05, 0.5);
     color: transparent;
@@ -40,15 +45,15 @@ body {
     margin: 0;
     border-radius: @cell-size / 20;
     flex: 1 0;
-    font-size: 5vmin;
+    font-size: 5vh;
     color: #0008;
     font-weight: bold;
     background: hsv(10, 0.1, 0.9);
     box-shadow: inset 0 2px 4px #0004;
     h4 {
       font-weight: normal;
-      font-size: 3vmin;
-      margin: 1.8vmin 0 0.5vmin 0;
+      font-size: 3vh;
+      margin: 1.8vh 0 0.5vh 0;
       opacity: 0.7;
     }
 
@@ -145,7 +150,7 @@ body {
   width: 100%;
   height: 100%;
   text-align: center;
-  padding-top: 30vmin;
+  padding-top: 30vh;
   color: #fffa;
   transition: backgrond 0.5s;
 }
@@ -156,8 +161,8 @@ body {
 }
 
 .footer {
-  line-height: 2vmin;
-  font-size: 2vmin;
+  line-height: 2vh;
+  font-size: 2vh;
   text-align: right;
   opacity: 0.5;
 }
