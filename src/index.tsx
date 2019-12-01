@@ -62,8 +62,11 @@ function App() {
         </div>
       </header>
       <Board game={state.game} />
-      <footer className="footer">Made with love by @undo76</footer>
-      <button onClick={() => dispatch('NEW')}>New Game</button>
+      <footer className="footer">
+        Made with love by @undo76
+        <button onClick={() => dispatch('NEW')}>New Game</button>
+      </footer>
+     
     </div>
   );
 }
