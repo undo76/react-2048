@@ -54,9 +54,15 @@ function App() {
 
   return (
     <div className="game">
+      <header className="header">
+        <h1 className="title">2048</h1>
+        <div className="score">
+          <h4>Score</h4>
+          {state.game.score}
+        </div>
+      </header>
       <Board game={state.game} />
-      <div className="score">Score: {state.game.score}</div>
-      {state.game.over && <div className="game-over">Game over</div>}
+      <footer className="footer">Made with love by @undo76</footer>
       <button onClick={() => dispatch('NEW')}>New Game</button>
     </div>
   );

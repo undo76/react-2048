@@ -47,7 +47,7 @@ const Cell = ({ cell, x, y }: { cell: CellType; x: number; y: number }) => {
 
 export const Board = ({ game }: { game: Game }) => {
   return (
-    <div className="game-board">
+    <div className={`game-board ${game.over && 'game-over'}`}>
       {game.cells.map((cell, i) => (
         <Cell
           key={cell ? cell.id : `null-${i}`}
@@ -56,6 +56,7 @@ export const Board = ({ game }: { game: Game }) => {
           y={Math.floor(i / game.size)}
         />
       ))}
+      {game.over && <div className="game-over-msg">Game over</div>}
     </div>
   );
 };
