@@ -2,6 +2,8 @@
 
 Implementation of the game 2048, using Parcel, React and react-spring. 
 
+https://2048.undo76.net
+
 ## Background
 
 Originally developed with Riot.js and then ported to Typescript and React in order to experiment with Parcel, react-spring, gestures and react-hooks.
